@@ -43,4 +43,14 @@ public class PaymentsRepository {
 	    paymentsDatabase.put(payment.getId(), payment);
 	}
 
+	public void updateDescription(Payment payment) {
+	    Payment paymentToUpdate = paymentsDatabase.get(payment.getId());
+	    paymentToUpdate.setDescription(payment.getDescription());
+	    paymentsDatabase.put(payment.getId(), paymentToUpdate);
+	}
+
+	public void delete(Long id) {
+	    paymentsDatabase.remove(id);
+	}
+	
 }

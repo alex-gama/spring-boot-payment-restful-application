@@ -52,5 +52,23 @@ public class PaymentController {
 	    paymentsRepository.update(payment);
 	    return new ResponseEntity<>(paymentOptional.get(), HttpStatus.OK);
 	}
+	
+	@RequestMapping(path = "/payments", method = RequestMethod.PATCH)
+	public ResponseEntity<Payment> updateDescription(@RequestBody Payment payment) {
+		Optional<Payment> paymentToUpdate = paymentsRepository.findBy(payment.getId());
+		if (!paymentToUpdate.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	    paymentsRepository.updateDescription(payment);
+	    return new ResponseEntity<>(HttpStatus.OK);
+	}
 
+	@RequestMapping(path = "/payments/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
+	    if (!paymentsRepository.findBy(id).isPresent()) {
+	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	    }
+	    paymentsRepository.delete(id);
+	    return new ResponseEntity<>(HttpStatus.OK);
+	}
 }
