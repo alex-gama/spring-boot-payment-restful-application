@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import com.application.buyer.Buyer;
+import com.application.payment.Payment.PaymentStatus;
 
 @Component
 public class PaymentsRepository {
@@ -20,19 +21,20 @@ public class PaymentsRepository {
 	private AtomicLong generatorId = new AtomicLong(3);
 
 	public PaymentsRepository() {
-		paymentsDatabase.put(1L, new Payment(1L, new BigDecimal("100"), "Buying something cool", new Buyer(1L, "Alex Gama")));
-		paymentsDatabase.put(2L, new Payment(2L, new BigDecimal("200"), "Buying something really great", new Buyer(2L, "Will Smith")));
-		paymentsDatabase.put(3L, new Payment(3L, new BigDecimal("300"), "Buying something not so good", new Buyer(3L, "Jessica Thompson")));
+	    paymentsDatabase.put(1L, new Payment(1L, new BigDecimal("100"), "Buying something cool", new Buyer(1L, "Alex Gama"), PaymentStatus.FINISHED));
+	    paymentsDatabase.put(2L, new Payment(2L, new BigDecimal("200"), "Buying something really great", new Buyer(2L, "Will Smith"), PaymentStatus.STARTED));
+	    paymentsDatabase.put(3L, new Payment(3L, new BigDecimal("300"), "Buying something not so good", new Buyer(3L, "Jessica Thompson"), PaymentStatus.WAITING));
 	}
 
 	public List<Payment> getPayments() {
 		return paymentsDatabase.values().stream().collect(Collectors.toList()); //Java 8 rocks :)
 	}
 
-	public void save(Payment payment) {
+	public Payment save(Payment payment) {
 	    Long id = generatorId.incrementAndGet();
 	    payment.setId(id);
 	    paymentsDatabase.put(id, payment);
+	    return payment;
 	}
 
 	public Optional<Payment> findBy(Long id) {
@@ -52,5 +54,5 @@ public class PaymentsRepository {
 	public void delete(Long id) {
 	    paymentsDatabase.remove(id);
 	}
-	
+
 }
