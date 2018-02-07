@@ -20,21 +20,27 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class PaymentController {
 
 	private PaymentsRepository paymentsRepository;
+	private PaymentDTOConverter converter;
 
 	@Autowired
-	public PaymentController(PaymentsRepository paymentsRepository) {
+	public PaymentController(PaymentsRepository paymentsRepository, PaymentDTOConverter converter) {
 		this.paymentsRepository = paymentsRepository;
+		this.converter = converter;
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public List<Payment> getPayments() {
-		List<Payment> payments = paymentsRepository.getPayments();
+	public ResponseEntity<List<PaymentDTO>> getPaymentsRepository() {
+	    List<Payment> payments = paymentsRepository.getPayments();
 
-		return payments;
+	    List<PaymentDTO> paymentsDTO = converter.from(payments);
+
+	    return new ResponseEntity<>(paymentsDTO, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Payment> savePayment(@RequestBody Payment payment) {
+	public ResponseEntity<Payment> savePayment(@RequestBody PaymentDTO paymentDTO) {
+		Payment payment = converter.from(paymentDTO);
+
 	    Payment paymentSaved = paymentsRepository.save(payment);
 
 	    HttpHeaders headers = new HttpHeaders();
@@ -49,12 +55,13 @@ public class PaymentController {
 	}
 
 	@RequestMapping(path = "/{id}", method = RequestMethod.GET)
-	public ResponseEntity<Payment> findById(@PathVariable("id") Long id) {
+	public ResponseEntity<PaymentDTO> findById(@PathVariable("id") Long id) {
 	    Optional<Payment> payment = paymentsRepository.findBy(id);
 	    if (!payment.isPresent()) {
 	    	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	    }
-	    return new ResponseEntity<>(payment.get(), HttpStatus.OK);
+	    PaymentDTO paymentDTO = converter.from(payment.get());
+	    return new ResponseEntity<>(paymentDTO, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT)

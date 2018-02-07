@@ -3,8 +3,9 @@ package com.application.payment;
 import java.math.BigDecimal;
 
 import com.application.buyer.Buyer;
+import com.application.payment.Payment.PaymentStatus;
 
-public class Payment {
+public class PaymentDTO {
 
 	private Long id;
 
@@ -15,22 +16,6 @@ public class Payment {
 	private Buyer buyer;
 
 	private PaymentStatus status;
-
-	//Required by Jackson to deserialize the JSON object
-	public Payment() {
-		this.status = PaymentStatus.STARTED;
-	}
-
-	public Payment(Long id, BigDecimal total, String description, Buyer buyer, PaymentStatus status) {
-		this.id = id;
-		this.total = total;
-		this.description = description;
-		this.buyer = buyer;
-	}
-
-	public enum PaymentStatus {
-		STARTED, WAITING, FINISHED;
-	}
 
 	public Long getId() {
 		return id;
@@ -66,6 +51,10 @@ public class Payment {
 
 	public PaymentStatus getStatus() {
 		return status;
+	}
+
+	public void setStatus(PaymentStatus status) {
+		this.status = status;
 	}
 
 }
