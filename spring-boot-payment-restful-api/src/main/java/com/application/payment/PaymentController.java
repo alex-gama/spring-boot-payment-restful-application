@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/payments")
 public class PaymentController {
 
 	private PaymentsRepository paymentsRepository;
@@ -22,19 +23,19 @@ public class PaymentController {
 		this.paymentsRepository = paymentsRepository;
 	}
 
-	@RequestMapping(path = "/payments", method = RequestMethod.GET)
-	public List<Payment> getPaymentsRepository() {
+	@RequestMapping(method = RequestMethod.GET)
+	public List<Payment> getPayments() {
 		List<Payment> payments = paymentsRepository.getPayments();
 
 		return payments;
 	}
 
-	@RequestMapping(path = "/payments", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST)
 	public void savePayment(@RequestBody Payment payment) {
 	    paymentsRepository.save(payment);
 	}
 
-	@RequestMapping(path = "/payments/{id}", method = RequestMethod.GET)
+	@RequestMapping(path = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Payment> findById(@PathVariable("id") Long id) {
 	    Optional<Payment> payment = paymentsRepository.findBy(id);
 	    if (!payment.isPresent()) {
@@ -43,7 +44,7 @@ public class PaymentController {
 	    return new ResponseEntity<>(payment.get(), HttpStatus.OK);
 	}
 
-	@RequestMapping(path = "/payments", method = RequestMethod.PUT)
+	@RequestMapping(method = RequestMethod.PUT)
 	public ResponseEntity<Payment> updatePayment(@RequestBody Payment payment) {
 		Optional<Payment> paymentOptional = paymentsRepository.findBy(payment.getId());
 	    if (!paymentOptional.isPresent()) {
@@ -52,8 +53,8 @@ public class PaymentController {
 	    paymentsRepository.update(payment);
 	    return new ResponseEntity<>(paymentOptional.get(), HttpStatus.OK);
 	}
-	
-	@RequestMapping(path = "/payments", method = RequestMethod.PATCH)
+
+	@RequestMapping(method = RequestMethod.PATCH)
 	public ResponseEntity<Payment> updateDescription(@RequestBody Payment payment) {
 		Optional<Payment> paymentToUpdate = paymentsRepository.findBy(payment.getId());
 		if (!paymentToUpdate.isPresent()) {
@@ -63,7 +64,7 @@ public class PaymentController {
 	    return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@RequestMapping(path = "/payments/{id}", method = RequestMethod.DELETE)
+	@RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 	    if (!paymentsRepository.findBy(id).isPresent()) {
 	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
