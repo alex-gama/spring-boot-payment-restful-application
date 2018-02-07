@@ -29,10 +29,11 @@ public class PaymentsRepository {
 		return paymentsDatabase.values().stream().collect(Collectors.toList()); //Java 8 rocks :)
 	}
 
-	public void save(Payment payment) {
+	public Payment save(Payment payment) {
 	    Long id = generatorId.incrementAndGet();
 	    payment.setId(id);
 	    paymentsDatabase.put(id, payment);
+	    return payment;
 	}
 
 	public Optional<Payment> findBy(Long id) {
@@ -52,5 +53,5 @@ public class PaymentsRepository {
 	public void delete(Long id) {
 	    paymentsDatabase.remove(id);
 	}
-	
+
 }
