@@ -15,22 +15,27 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.application.buyer.Buyer;
+import com.application.buyer.BuyerRepository;
+
 @RestController
 @RequestMapping("/payments")
 public class PaymentController {
 
-	private PaymentsRepository paymentsRepository;
+	private PaymentRepository paymentRepository;
 	private PaymentDTOConverter converter;
+	private BuyerRepository buyerRepository;
 
 	@Autowired
-	public PaymentController(PaymentsRepository paymentsRepository, PaymentDTOConverter converter) {
-		this.paymentsRepository = paymentsRepository;
+	public PaymentController(PaymentRepository paymentRepository, BuyerRepository buyerRepository, PaymentDTOConverter converter) {
+		this.paymentRepository = paymentRepository;
+		this.buyerRepository = buyerRepository;
 		this.converter = converter;
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
 	public ResponseEntity<List<PaymentDTO>> getPaymentsRepository() {
-	    List<Payment> payments = paymentsRepository.getPayments();
+	    List<Payment> payments = paymentRepository.findAll();
 
 	    List<PaymentDTO> paymentsDTO = converter.from(payments);
 
@@ -41,7 +46,10 @@ public class PaymentController {
 	public ResponseEntity<Payment> savePayment(@RequestBody PaymentDTO paymentDTO) {
 		Payment payment = converter.from(paymentDTO);
 
-	    Payment paymentSaved = paymentsRepository.save(payment);
+		Buyer buyer = payment.getBuyer();
+		buyerRepository.save(buyer);
+
+	    Payment paymentSaved = paymentRepository.save(payment);
 
 	    HttpHeaders headers = new HttpHeaders();
 	    URI uri = ServletUriComponentsBuilder
@@ -56,7 +64,7 @@ public class PaymentController {
 
 	@RequestMapping(path = "/{id}", method = RequestMethod.GET)
 	public ResponseEntity<PaymentDTO> findById(@PathVariable("id") Long id) {
-	    Optional<Payment> payment = paymentsRepository.findBy(id);
+	    Optional<Payment> payment = paymentRepository.findById(id);
 	    if (!payment.isPresent()) {
 	    	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	    }
@@ -66,30 +74,20 @@ public class PaymentController {
 
 	@RequestMapping(method = RequestMethod.PUT)
 	public ResponseEntity<Payment> updatePayment(@RequestBody Payment payment) {
-		Optional<Payment> paymentOptional = paymentsRepository.findBy(payment.getId());
+		Optional<Payment> paymentOptional = paymentRepository.findById(payment.getId());
 	    if (!paymentOptional.isPresent()) {
 	    	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	    }
-	    paymentsRepository.update(payment);
+	    paymentRepository.save(payment);
 	    return new ResponseEntity<>(paymentOptional.get(), HttpStatus.OK);
-	}
-
-	@RequestMapping(method = RequestMethod.PATCH)
-	public ResponseEntity<Payment> updateDescription(@RequestBody Payment payment) {
-		Optional<Payment> paymentToUpdate = paymentsRepository.findBy(payment.getId());
-		if (!paymentToUpdate.isPresent()) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	    paymentsRepository.updateDescription(payment);
-	    return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@RequestMapping(path = "/{id}", method = RequestMethod.DELETE)
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
-	    if (!paymentsRepository.findBy(id).isPresent()) {
+	    if (!paymentRepository.findById(id).isPresent()) {
 	        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	    }
-	    paymentsRepository.delete(id);
+	    paymentRepository.delete(id);
 	    return new ResponseEntity<>(HttpStatus.OK);
 	}
 }

@@ -2,18 +2,31 @@ package com.application.payment;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
 import com.application.buyer.Buyer;
 
+@Entity
 public class Payment {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	private BigDecimal total;
 
 	private String description;
 
+	@OneToOne
 	private Buyer buyer;
 
+	@Enumerated(value = EnumType.STRING)
 	private PaymentStatus status;
 
 	//Required by Jackson to deserialize the JSON object
