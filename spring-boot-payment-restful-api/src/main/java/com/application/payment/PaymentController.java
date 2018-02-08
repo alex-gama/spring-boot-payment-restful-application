@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,7 +45,7 @@ public class PaymentController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public ResponseEntity<Payment> savePayment(@RequestBody PaymentDTO paymentDTO) {
+	public ResponseEntity<Payment> savePayment(@Valid @RequestBody PaymentDTO paymentDTO) {
 		Payment payment = converter.from(paymentDTO);
 
 		Buyer buyer = payment.getBuyer();
