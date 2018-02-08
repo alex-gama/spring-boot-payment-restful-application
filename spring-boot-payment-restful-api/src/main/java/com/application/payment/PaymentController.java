@@ -1,12 +1,13 @@
 package com.application.payment;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,12 +37,13 @@ public class PaymentController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public ResponseEntity<List<PaymentDTO>> getPaymentsRepository() {
-	    List<Payment> payments = paymentRepository.findAll();
+	public ResponseEntity<Page<PaymentDTO>> getPayments(Pageable pageable) {
+		Page<Payment> paginatedPayments = paymentRepository.findAll(pageable);
 
-	    List<PaymentDTO> paymentsDTO = converter.from(payments);
+		Page<PaymentDTO> payments = paginatedPayments
+			.map(converter::from);
 
-	    return new ResponseEntity<>(paymentsDTO, HttpStatus.OK);
+		return new ResponseEntity<>(payments, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST)

@@ -2,9 +2,9 @@ package com.application.payment;
 
 import java.util.Optional;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface PaymentRepository extends JpaRepository<Payment, Long> {
+public interface PaymentRepository extends PagingAndSortingRepository<Payment, Long> {
 
 	Optional<Payment> findById(Long id);
 
