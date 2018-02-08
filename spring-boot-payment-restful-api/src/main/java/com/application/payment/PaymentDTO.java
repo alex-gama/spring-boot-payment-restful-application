@@ -2,6 +2,10 @@ package com.application.payment;
 
 import java.math.BigDecimal;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.application.buyer.Buyer;
 import com.application.payment.Payment.PaymentStatus;
 
@@ -9,8 +13,10 @@ public class PaymentDTO {
 
 	private Long id;
 
+	@NotNull
 	private BigDecimal total;
 
+	@NotEmpty
 	private String description;
 
 	private Buyer buyer;

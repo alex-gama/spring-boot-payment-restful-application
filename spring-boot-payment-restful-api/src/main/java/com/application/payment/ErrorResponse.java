@@ -1,5 +1,9 @@
 package com.application.payment;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ErrorResponse {
 
 	private String message;
@@ -9,6 +13,8 @@ public class ErrorResponse {
 	private int status;
 
 	private String date;
+	
+	private Map<String, List<ValidationError>> errors = new HashMap<>();
 
 	public String getMessage() {
 		return message;
@@ -40,6 +46,10 @@ public class ErrorResponse {
 
 	public void setDate(String date) {
 		this.date = date;
+	}
+	
+	public void addError(String field, List<ValidationError> validation) {
+		errors.put(field, validation);
 	}
 
 }
