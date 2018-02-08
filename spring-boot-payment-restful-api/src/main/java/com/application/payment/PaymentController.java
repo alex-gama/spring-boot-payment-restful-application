@@ -66,7 +66,7 @@ public class PaymentController {
 	public ResponseEntity<PaymentDTO> findById(@PathVariable("id") Long id) {
 	    Optional<Payment> payment = paymentRepository.findById(id);
 	    if (!payment.isPresent()) {
-	    	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	    	throw new ResourceNotFoundException(String.format("Payment was not found {%d}", id));
 	    }
 	    PaymentDTO paymentDTO = converter.from(payment.get());
 	    return new ResponseEntity<>(paymentDTO, HttpStatus.OK);
