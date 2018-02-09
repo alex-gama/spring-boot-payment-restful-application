@@ -5,11 +5,12 @@ import java.math.BigDecimal;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.hateoas.ResourceSupport;
 
 import com.application.buyer.Buyer;
 import com.application.payment.Payment.PaymentStatus;
 
-public class PaymentDTO {
+public class PaymentDTO extends ResourceSupport {
 
 	private Long id;
 
@@ -23,7 +24,7 @@ public class PaymentDTO {
 
 	private PaymentStatus status;
 
-	public Long getId() {
+	public Long getPaymentId() {
 		return id;
 	}
 
