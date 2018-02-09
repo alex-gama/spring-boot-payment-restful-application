@@ -10,7 +10,7 @@ public class PaymentDTOConverter {
 
 	public Payment from(PaymentDTO paymentDTO) {
 		Payment payment = new Payment();
-		payment.setId(paymentDTO.getId());
+		payment.setId(paymentDTO.getPaymentId());
 		payment.setDescription(paymentDTO.getDescription());
 		payment.setBuyer(paymentDTO.getBuyer());
 		payment.setTotal(paymentDTO.getTotal());

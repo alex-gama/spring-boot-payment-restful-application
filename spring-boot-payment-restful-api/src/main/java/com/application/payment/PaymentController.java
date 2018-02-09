@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.application.buyer.Buyer;
+import com.application.buyer.BuyerController;
 import com.application.buyer.BuyerRepository;
 
 @RestController
@@ -54,12 +56,19 @@ public class PaymentController {
 		buyerRepository.save(buyer);
 
 	    Payment paymentSaved = paymentRepository.save(payment);
+	    PaymentDTO savedPaymentDTO = converter.from(paymentSaved);
+	    
+	    savedPaymentDTO
+		    .add(ControllerLinkBuilder
+		 		.linkTo(ControllerLinkBuilder
+		 				.methodOn(BuyerController.class)
+		 					.findBy(payment.getBuyer().getId())).withRel("buyer"));
 
 	    HttpHeaders headers = new HttpHeaders();
 	    URI uri = ServletUriComponentsBuilder
 	            .fromCurrentRequest()
 	            .path("/{id}")
-	            .buildAndExpand(paymentSaved.getId())
+	            .buildAndExpand(savedPaymentDTO.getId())
 	            .toUri();
 	    headers.setLocation(uri);
 
