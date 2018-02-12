@@ -26,6 +26,16 @@ public class PaymentDTOConverter {
 		paymentDTO.setBuyer(payment.getBuyer());
 		return paymentDTO;
 	}
+    
+    public PaymentV2DTO fromV2(Payment payment) {
+    	PaymentV2DTO paymentDTO = new PaymentV2DTO();
+    	paymentDTO.setId(payment.getId());
+    	paymentDTO.setDescription(payment.getDescription());
+    	paymentDTO.setStatus(payment.getStatus());
+    	paymentDTO.setTotal(payment.getTotal());
+    	paymentDTO.setBuyer(payment.getBuyer());
+    	return paymentDTO;
+    }
 
     public List<PaymentDTO> from(List<Payment> payments) {
         List<PaymentDTO> paymentsDTO = payments
